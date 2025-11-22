@@ -49,7 +49,7 @@ const getAllUser = catchAsync(async(req,res)=>{
         success:true,
         message:'Users retrieved successfully',
         statusCode:200,
-        data:result
+        data:result        
     });
 });
 const updateUserStatusController = catchAsync(async(req,res)=>{
