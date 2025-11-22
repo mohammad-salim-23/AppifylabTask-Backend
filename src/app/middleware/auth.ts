@@ -36,6 +36,7 @@ const auth = (...requiredRoles:TUserRole[])=>{
     req.user = {
         id:user.id,
         firstName:user.firstName,
+        lastName:user.lastName,
         email:user.email,
         role:user.role,
 
