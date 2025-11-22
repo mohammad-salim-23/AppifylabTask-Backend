@@ -3,7 +3,6 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { CommentService } from "./comment.service";
 
-
 const addComment = catchAsync(async (req: Request, res: Response) => {
   const author = req.user!.id;
   const { postId, text, parentComment } = req.body;
@@ -29,5 +28,40 @@ const getComments = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+//Update Comment
+const updateComment = catchAsync(async (req: Request, res: Response) => {
+  const commentId = req.params.commentId;
+  const userId = req.user!.id;
+  const { text } = req.body;
 
-export const CommentController = { addComment, getComments};
+  const updatedComment = await CommentService.updateCommentService(commentId, userId, text);
+
+  sendResponse(res, {
+    success: true,
+    message: "Comment updated successfully",
+    statusCode: 200,
+    data: updatedComment
+  });
+});
+
+//Delete Comment
+const deleteComment = catchAsync(async (req: Request, res: Response) => {
+  const commentId = req.params.commentId;
+  const userId = req.user!.id;
+
+  const deletedComment = await CommentService.deleteCommentService(commentId, userId);
+
+  sendResponse(res, {
+    success: true,
+    message: "Comment deleted successfully",
+    statusCode: 200,
+    data: deletedComment
+  });
+});
+
+export const CommentController = {
+  addComment,
+  getComments,
+  updateComment,
+  deleteComment
+};

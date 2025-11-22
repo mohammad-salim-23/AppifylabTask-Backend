@@ -37,9 +37,55 @@ const getComments = async(postId: string, limit = 10, lastSeen?: Date) => {
 const getReplies = async(commentId: string, limit = 10, lastSeen?: Date) => {
   return Comment.getRepliesByComment(commentId, limit, lastSeen);
 };
+const updateCommentService = async (
+  commentId: string,
+  userId: string,
+  newText: string
+) => {
+  const updated = await Comment.findOneAndUpdate(
+    { _id: commentId, author: userId }, // শুধুমাত্র owner update করতে পারবে
+    { 
+      $set: { 
+        text: newText,
+        updatedAt: new Date()
+      } 
+    },
+    { new: true } // updated document return করবে
+  );
+
+  if (!updated) throw new Error("Comment not found or unauthorized");
+
+  return updated;
+};
+
+const deleteCommentService = async (commentId: string, userId: string) => {
+  const comment = await Comment.findOneAndDelete({ 
+    _id: commentId, 
+    author: userId 
+  });
+
+  if (!comment) throw new Error("Comment not found or unauthorized");
+
+  // counter rollback 
+  if (comment.parentComment) {
+    await Comment.updateOne(
+      { _id: comment.parentComment },
+      { $inc: { replyCount: -1 } }
+    );
+  } else {
+    await Post.updateOne(
+      { _id: comment.postId },
+      { $inc: { commentsCount: -1 } }
+    );
+  }
+
+  return comment;
+};
 
 export const CommentService = {
   addComment,
   getComments,
-  getReplies
+  getReplies,
+  updateCommentService,
+  deleteCommentService
 };

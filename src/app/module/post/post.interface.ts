@@ -1,4 +1,4 @@
-import { Document, Model, Types } from "mongoose";
+import {  Model, Types } from "mongoose";
 
 export interface IPost {
     author: Types.ObjectId; // Reference to User
