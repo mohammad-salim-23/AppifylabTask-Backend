@@ -19,5 +19,14 @@ router.get(
     auth('user', 'admin'),
     PostController.getFeed
 );
-
+router.patch(
+    '/:id',
+    auth("user","admin"),
+    PostController.updatePost
+)
+router.delete(
+    '/:id',
+    auth('user','admin'),
+    PostController.deletePost
+)
 export const postRoutes = router;

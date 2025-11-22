@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { PostService } from "./post.service";
+import AppError from "../../errors/AppError";
+import { StatusCodes } from "http-status-codes";
 
 const createPost = catchAsync(async(req: Request, res: Response) => {
     console.log("Creating post with body:", req.user.id, req.body);
@@ -29,8 +31,41 @@ const getFeed = catchAsync(async(req: Request, res: Response) => {
         data: posts
     });
 });
+// UPDATE POST
+const updatePost = catchAsync(async (req: Request, res: Response) => {
+    const postId = req.params.id;
+    const userId = req.user!.id;
 
+    const post = await PostService.updatePost(postId, userId, req.body);
+
+    if (!post) throw new AppError(StatusCodes.UNAUTHORIZED, "Not allowed to update this post");
+
+    sendResponse(res, {
+        success: true,
+        message: "Post updated successfully",
+        statusCode: 200,
+        data: post
+    });
+});
+// DELETE POST
+const deletePost = catchAsync(async (req: Request, res: Response) => {
+    const postId = req.params.id;
+    const userId = req.user!.id;
+
+    const deleted = await PostService.deletePost(postId, userId);
+
+    if (!deleted) throw new AppError(StatusCodes.UNAUTHORIZED, "Not allowed to delete this post");
+
+    sendResponse(res, {
+        success: true,
+        message: "Post deleted successfully",
+        statusCode: 200,
+        data: null
+    });
+});
 export const PostController = {
     createPost,
     getFeed,
+    updatePost,
+    deletePost
 };
