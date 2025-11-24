@@ -19,7 +19,31 @@ const getFeed = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1]
     const posts = yield post_model_1.Post.getFeed(userId, limit, lastSeen);
     return posts;
 });
+// UPDATE POST
+const updatePost = (postId, userId, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const post = yield post_model_1.Post.findOne({ _id: postId, author: userId });
+    if (!post)
+        return null;
+    if (data.text !== undefined)
+        post.text = data.text;
+    if (data.image !== undefined)
+        post.image = data.image;
+    if (data.visibility !== undefined)
+        post.visibility = data.visibility;
+    yield post.save();
+    return post;
+});
+// DELETE POST
+const deletePost = (postId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const post = yield post_model_1.Post.findOne({ _id: postId, author: userId });
+    if (!post)
+        return null;
+    yield post_model_1.Post.deleteOne({ _id: postId });
+    return true;
+});
 exports.PostService = {
     createPost,
     getFeed,
+    updatePost,
+    deletePost
 };

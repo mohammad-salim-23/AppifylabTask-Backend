@@ -32,7 +32,8 @@ const loginUser = async(payload:TRegisterUser)=>{
     }
     const jwtPayload = {
         userEmail: user?.email,
-        role:user?.role
+        role:user?.role,
+        firstName: user?.firstName
     };
     const accessToken = createToken(
         jwtPayload,

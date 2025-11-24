@@ -43,14 +43,14 @@ const updateCommentService = async (
   newText: string
 ) => {
   const updated = await Comment.findOneAndUpdate(
-    { _id: commentId, author: userId }, // শুধুমাত্র owner update করতে পারবে
+    { _id: commentId, author: userId },
     { 
       $set: { 
         text: newText,
         updatedAt: new Date()
       } 
     },
-    { new: true } // updated document return করবে
+    { new: true } 
   );
 
   if (!updated) throw new Error("Comment not found or unauthorized");

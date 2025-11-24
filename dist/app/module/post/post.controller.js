@@ -16,6 +16,8 @@ exports.PostController = void 0;
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const post_service_1 = require("./post.service");
+const AppError_1 = __importDefault(require("../../errors/AppError"));
+const http_status_codes_1 = require("http-status-codes");
 const createPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     console.log("Creating post with body:", req.user.id, req.body);
@@ -42,7 +44,37 @@ const getFeed = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0
         data: posts
     });
 }));
+// UPDATE POST
+const updatePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const postId = req.params.id;
+    const userId = req.user.id;
+    const post = yield post_service_1.PostService.updatePost(postId, userId, req.body);
+    if (!post)
+        throw new AppError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Not allowed to update this post");
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: "Post updated successfully",
+        statusCode: 200,
+        data: post
+    });
+}));
+// DELETE POST
+const deletePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const postId = req.params.id;
+    const userId = req.user.id;
+    const deleted = yield post_service_1.PostService.deletePost(postId, userId);
+    if (!deleted)
+        throw new AppError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, "Not allowed to delete this post");
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: "Post deleted successfully",
+        statusCode: 200,
+        data: null
+    });
+}));
 exports.PostController = {
     createPost,
     getFeed,
+    updatePost,
+    deletePost
 };

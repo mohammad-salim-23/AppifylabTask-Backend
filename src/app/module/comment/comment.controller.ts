@@ -27,6 +27,20 @@ const getComments = catchAsync(async (req: Request, res: Response) => {
     data: comments
   });
 });
+const getReplies = catchAsync(async (req: Request, res: Response) => {
+  const { commentId } = req.params;
+  const limit = Number(req.query.limit) || 10;
+  const lastSeen = req.query.lastSeen ? new Date(req.query.lastSeen as string) : undefined;
+
+  const replies = await CommentService.getReplies(commentId, limit, lastSeen);
+
+  sendResponse(res, {
+    success: true,
+    message: "Replies retrieved",
+    statusCode: 200,
+    data: replies
+  });
+});
 
 //Update Comment
 const updateComment = catchAsync(async (req: Request, res: Response) => {
@@ -62,6 +76,7 @@ const deleteComment = catchAsync(async (req: Request, res: Response) => {
 export const CommentController = {
   addComment,
   getComments,
+  getReplies,
   updateComment,
   deleteComment
 };

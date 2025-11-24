@@ -20,25 +20,39 @@ const auth_model_1 = require("../module/auth/auth.model");
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 const auth = (...requiredRoles) => {
     return (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        const token = req.headers.authorization;
+        let token = req.headers.authorization;
+        // Check if token exists
         if (!token) {
             throw new AppError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'You are not authorized to access this resource');
         }
-        //checking if the given token is valid
-        const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
+        // Remove "Bearer " prefix if it exists
+        if (token.startsWith("Bearer ")) {
+            token = token.split(" ")[1];
+        }
+        // Verify JWT token
+        let decoded;
+        try {
+            decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
+        }
+        catch (error) {
+            throw new AppError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'Invalid or expired token');
+        }
         console.log("Decoded Token:", decoded);
-        const { role, userEmail, iat } = decoded;
+        const { role, userEmail, firstName } = decoded;
+        // Check if user exists
         const user = yield auth_model_1.User.isUserExistByEmail(userEmail);
         if (!user) {
             throw new AppError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'User no longer exists');
         }
-        const userStatus = user === null || user === void 0 ? void 0 : user.isBlocked;
-        if (userStatus) {
+        // Check if user is blocked
+        if (user.isBlocked) {
             throw new AppError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'User is blocked, please contact admin');
         }
+        // Check if user has required role
         if (requiredRoles.length && !requiredRoles.includes(role)) {
             throw new AppError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'You do not have permission to access this resource');
         }
+        // Attach user info to request object
         req.user = {
             id: user.id,
             firstName: user.firstName,

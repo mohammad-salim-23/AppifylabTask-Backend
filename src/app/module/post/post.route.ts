@@ -24,8 +24,7 @@ router.patch(
     auth("user","admin"),
     PostController.updatePost
 )
-router.delete(
-    '/:id',
+router.delete( '/:id',
     auth('user','admin'),
     PostController.deletePost
 )

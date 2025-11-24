@@ -20,6 +20,8 @@ router.post("/", auth("user","admin"), validateRequest(addCommentSchema), Commen
 
 // get top-level comments for a post 
 router.get("/:postId", auth("user","admin"), CommentController.getComments);
+//get reply
+router.get("/replies/:commentId", auth("user","admin"), CommentController.getReplies);
 
 router.patch("/:commentId",auth("user","admin"),
 CommentController.updateComment);
