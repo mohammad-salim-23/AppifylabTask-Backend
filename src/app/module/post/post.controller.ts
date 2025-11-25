@@ -31,6 +31,21 @@ const getFeed = catchAsync(async(req: Request, res: Response) => {
         data: posts
     });
 });
+
+const getPostsByAuthor = catchAsync(async(req:Request,res:Response)=>{
+    const userId = req.user?.id;
+    const limit = Number(req.query.limit) ||10
+    const lastSeen = req.query.lastSeen? new Date(req.query.lastSeen as string) : undefined
+
+    const posts = await PostService.getPostsByAuthor(userId,limit,lastSeen);
+
+    sendResponse(res,{
+        success:true,
+        message:"Own Posts retrieved successfully",
+        statusCode:200,
+        data: posts
+    })
+})
 // UPDATE POST
 const updatePost = catchAsync(async (req: Request, res: Response) => {
     const postId = req.params.id;
@@ -66,6 +81,7 @@ const deletePost = catchAsync(async (req: Request, res: Response) => {
 export const PostController = {
     createPost,
     getFeed,
+    getPostsByAuthor,
     updatePost,
     deletePost
 };

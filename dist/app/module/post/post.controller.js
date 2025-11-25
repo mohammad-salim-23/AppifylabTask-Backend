@@ -44,6 +44,19 @@ const getFeed = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0
         data: posts
     });
 }));
+const getPostsByAuthor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+    const limit = Number(req.query.limit) || 10;
+    const lastSeen = req.query.lastSeen ? new Date(req.query.lastSeen) : undefined;
+    const posts = yield post_service_1.PostService.getPostsByAuthor(userId, limit, lastSeen);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: "Own Posts retrieved successfully",
+        statusCode: 200,
+        data: posts
+    });
+}));
 // UPDATE POST
 const updatePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const postId = req.params.id;
@@ -75,6 +88,7 @@ const deletePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 exports.PostController = {
     createPost,
     getFeed,
+    getPostsByAuthor,
     updatePost,
     deletePost
 };

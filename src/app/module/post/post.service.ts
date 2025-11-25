@@ -1,5 +1,5 @@
 import { Post } from "./post.model";
-import { IPost } from "./post.interface";
+
 
 const createPost = async(payload: { author: string, text: string, image?: string, visibility?: 'public' | 'private' }) => {
     const post = await Post.create(payload);
@@ -10,6 +10,10 @@ const getFeed = async(userId: string, limit: number = 10, lastSeen?: Date) => {
     const posts = await Post.getFeed(userId, limit, lastSeen);
     return posts;
 };
+ const getPostsByAuthor = async(userId:string,limit: number=10,lastSeen?:Date)=>{
+    const posts = await Post.getPostsByAuthor(userId,limit,lastSeen);
+    return posts;
+ }
  // UPDATE POST
 const updatePost = async (postId: string, userId: string, data: any) => {
     const post = await Post.findOne({ _id: postId, author: userId });
@@ -35,6 +39,7 @@ const deletePost = async (postId: string, userId: string) => {
 export const PostService = {
     createPost,
     getFeed,
+    getPostsByAuthor,
     updatePost,
     deletePost
 };

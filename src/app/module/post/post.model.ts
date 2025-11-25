@@ -21,4 +21,13 @@ postSchema.statics.getFeed = async function(userId: string, limit: number, lastS
                .lean();
 };
 
+postSchema.statics.getPostsByAuthor = async function(userId:string,limit:number,lastSeen?:Date){
+    const query: any = {author: new Types.ObjectId(userId)}
+    if(lastSeen) query.createdAt = {$lt: lastSeen};
+    return this.find(query)
+               .sort({createdAt:-1})
+               .limit(limit)
+               .populate('author','firstName lastName email')
+               .lean()
+};
 export const Post = model<IPost, IPostModel>('Post', postSchema);

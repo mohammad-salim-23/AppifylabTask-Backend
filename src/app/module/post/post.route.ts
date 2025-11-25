@@ -19,6 +19,11 @@ router.get(
     auth('user', 'admin'),
     PostController.getFeed
 );
+//own post fetch
+router.get("/my-posts",
+    auth('user','admin'),
+    PostController.getPostsByAuthor
+)
 router.patch(
     '/:id',
     auth("user","admin"),

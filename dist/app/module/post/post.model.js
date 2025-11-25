@@ -31,4 +31,16 @@ postSchema.statics.getFeed = function (userId, limit, lastSeen) {
             .lean();
     });
 };
+postSchema.statics.getPostsByAuthor = function (userId, limit, lastSeen) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const query = { author: new mongoose_1.Types.ObjectId(userId) };
+        if (lastSeen)
+            query.createdAt = { $lt: lastSeen };
+        return this.find(query)
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .populate('author', 'firstName lastName email')
+            .lean();
+    });
+};
 exports.Post = (0, mongoose_1.model)('Post', postSchema);

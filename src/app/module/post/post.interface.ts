@@ -14,4 +14,5 @@ export interface IPost {
 export interface IPostModel extends Model<IPost> {
     // Optional static methods
     getFeed(userId: string, limit: number, lastSeen?: Date): Promise<IPost[]>;
+    getPostsByAuthor(userId: string, limit: number, lastSeen?: Date): Promise<IPost[]>;
 }

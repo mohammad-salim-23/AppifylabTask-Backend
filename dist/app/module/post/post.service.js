@@ -19,6 +19,10 @@ const getFeed = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1]
     const posts = yield post_model_1.Post.getFeed(userId, limit, lastSeen);
     return posts;
 });
+const getPostsByAuthor = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1], void 0, function* (userId, limit = 10, lastSeen) {
+    const posts = yield post_model_1.Post.getPostsByAuthor(userId, limit, lastSeen);
+    return posts;
+});
 // UPDATE POST
 const updatePost = (postId, userId, data) => __awaiter(void 0, void 0, void 0, function* () {
     const post = yield post_model_1.Post.findOne({ _id: postId, author: userId });
@@ -44,6 +48,7 @@ const deletePost = (postId, userId) => __awaiter(void 0, void 0, void 0, functio
 exports.PostService = {
     createPost,
     getFeed,
+    getPostsByAuthor,
     updatePost,
     deletePost
 };

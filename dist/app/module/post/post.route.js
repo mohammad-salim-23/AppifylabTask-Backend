@@ -13,6 +13,8 @@ const router = (0, express_1.Router)();
 // Protected routes
 router.post('/', (0, auth_1.default)('user', 'admin'), (0, validateRequest_1.default)(post_validation_1.createPostValidation), post_controller_1.PostController.createPost);
 router.get('/feed', (0, auth_1.default)('user', 'admin'), post_controller_1.PostController.getFeed);
+//own post fetch
+router.get("/my-posts", (0, auth_1.default)('user', 'admin'), post_controller_1.PostController.getPostsByAuthor);
 router.patch('/:id', (0, auth_1.default)("user", "admin"), post_controller_1.PostController.updatePost);
 router.delete('/:id', (0, auth_1.default)('user', 'admin'), post_controller_1.PostController.deletePost);
 exports.postRoutes = router;
