@@ -17,16 +17,19 @@ const toggleLike = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getLikesByPost = catchAsync(async (req: Request, res: Response) => {
+  console.log("...id",req.user)
+  const userId = req.user.id;
   const postId = req.params.postId;
-
+  
   // Find all likes for this post and populate user info
   const likes = await Like.find({ targetId: postId, targetType: "Post" }).populate("user", "firstName lastName avatar");
-
+   
+  const userLiked = likes.some((l)=>l.user._id.toString()===userId);
   sendResponse(res, {
     success: true,
     message: "Likes fetched successfully",
     statusCode: 200,
-    data: likes
+    data: {likedUsers:likes,userLiked}
   });
 });
 export const LikeController = {

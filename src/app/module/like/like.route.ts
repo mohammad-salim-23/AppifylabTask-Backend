@@ -7,5 +7,5 @@ const router = Router();
 
 
 router.post("/", auth("user", "admin"),  LikeController.toggleLike);
-router.get("/post/:postId", LikeController.getLikesByPost);
+router.get("/post/:postId",auth("user","admin"), LikeController.getLikesByPost);
 export const likeRoutes = router;
